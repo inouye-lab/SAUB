@@ -1,0 +1,9 @@
+_target_: src.data.unpaired_enc_computed_datamodule.UnpairedEncModule
+data_dir: ${paths.data_dir}
+batch_size: 4096 # Needs to be divisible by the number of devices (e.g., if in a distributed setup)
+num_workers: 16
+pin_memory: False
+src_train_file: "encoded_celebA/encoded_celebA_train_male_ViT-H-14-378-quickgelu_dfn5b_64.pth"
+tgt_train_file: "encoded_celebA/encoded_celebA_train_female_ViT-H-14-378-quickgelu_dfn5b_64.pth"
+src_test_file: "encoded_celebA/encoded_celebA_test_male_ViT-H-14-378-quickgelu_dfn5b_64.pth"
+tgt_test_file: "encoded_celebA/encoded_celebA_test_female_ViT-H-14-378-quickgelu_dfn5b_64.pth"

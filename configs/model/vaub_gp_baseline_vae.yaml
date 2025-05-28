@@ -1,0 +1,77 @@
+_target_: src.models.vaub_gp_module_simple.VAUBGPModule
+
+latent_dim: 768
+
+optimizer_vae_1:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: 1e-5
+  weight_decay: 0.01
+
+optimizer_vae_2:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: 1e-5
+  weight_decay: 0.01
+
+optimizer_score:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: 5e-4
+  weight_decay: 0.01
+
+optimizer_cls:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: 5e-4
+  weight_decay: 0.01
+
+#scheduler:
+#  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+#  _partial_: true
+#  mode: min
+#  factor: 0.1
+#  patience: 10
+
+vae1:
+  _target_: src.models.components.vae_baseline.VAE
+  _partial_: true
+
+vae2:
+  _target_: src.models.components.vae_baseline.VAE
+  _partial_: true
+
+score_prior:
+  _target_: src.models.components.score_based_model.Score_fn
+  _partial_: true
+  sigma_min: 0.01
+  sigma_max: 0.4
+  num_timesteps: 100
+
+unet:
+  _target_: src.models.components.unet.UNet
+  _partial_: true
+  num_timesteps: 100
+  is_warm_init: false
+
+classifier:
+  _target_: src.models.components.classifier_net.ClassifierSimple
+  _partial_: true
+
+gp:
+  _target_: src.models.components.gp_precomputed_model.GPModule
+  _partial_: true
+  metric_name: "CLIP"
+  model_name: "ViT-L-14"
+  pretrained_dataset: "commonpool_xl_s13b_b90k"
+
+is_pnp: true
+beta: 5e-3
+gp_lambda: 4e-4
+block_size: 256
+cls_lambda: 1e-3
+is_vanilla: true
+loops: 5
+
+# compile model for faster training with pytorch 2.0
+compile: false

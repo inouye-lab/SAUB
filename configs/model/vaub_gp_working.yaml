@@ -1,0 +1,107 @@
+_target_: src.models.vaub_gp_module_working.VAUBGPModule
+
+optimizer_vae_1:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: 1e-4
+  weight_decay: 0.01
+
+optimizer_vae_2:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: 1e-4
+  weight_decay: 0.01
+
+optimizer_score:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: 1e-3
+  weight_decay: 0.01
+
+optimizer_cls:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: 1e-4
+  weight_decay: 0.01
+
+#scheduler:
+#  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+#  _partial_: true
+#  mode: min
+#  factor: 0.1
+#  patience: 10
+
+vae1:
+  _target_: src.models.components.vae_res_cnn.ResConvVAE
+  type_of_dataset: "mnist"
+  logvar_constraint: "sigmoid"
+  is_2d: false
+  is_3d: false
+  _partial_: true
+
+vae2:
+  _target_: src.models.components.vae_res_cnn.ResConvVAE
+  type_of_dataset: "mnist"
+  logvar_constraint: "sigmoid"
+  is_2d: false
+  is_3d: false
+  _partial_: true
+
+score_prior:
+  _target_: src.models.components.score_based_model.Score_fn_noise
+  _partial_: true
+  sigma_min: 0.01
+  sigma_max: 0.4
+  num_timesteps: 100
+  is_add_latent_noise: false
+
+unet:
+  _target_: src.models.components.unet.UNet_noise
+  _partial_: true
+  num_timesteps: 100
+  embedding_dim: 2
+  num_latent_noise_scale: 50
+  is_add_latent_noise: false
+  multiplier: 4
+  is_warm_init: false
+
+classifier:
+  _target_: src.models.components.classifier_net.CustomClassifier
+  _partial_: true
+
+gp:
+  _target_: src.models.components.gp_precomputed_model.GPModule
+  _partial_: true
+  diff: "MAE"
+  mode: "max"
+  dist_x_mode: "L22"
+  threshold_0: 0.34
+  threshold_1: 0.45
+  coef_0: 9.2267
+  intercept_0: -3.5454
+  coef_1: 8.3527
+  intercept_1: -4.2484
+
+
+vaub_lambda: 1
+gp_lambda: 0.03
+recon_lambda: 1
+
+min_noise_scale: 0
+max_noise_scale: 0
+num_latent_noise_scale: 1
+init_scale: 0.1
+
+latent_dim: 100
+latent_row_dim: 10
+latent_col_dim: 10
+
+block_size: 4096
+cls_lambda: 1e-3
+is_vanilla: true
+loops: 1
+warm_score_epochs: 50
+gather_z: false
+
+# compile model for faster training with pytorch 2.0
+compile: false

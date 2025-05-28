@@ -1,0 +1,6 @@
+_target_: src.data.flip_rot_mnist_pair_datamodule.FlipRotMNISTPairModule
+data_dir: ${paths.data_dir}
+batch_size: 1024 # Needs to be divisible by the number of devices (e.g., if in a distributed setup)
+num_workers: 16
+pin_memory: False
+rot_angle: 0

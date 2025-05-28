@@ -1,0 +1,78 @@
+_target_: src.models.vaub_gp_module.VAUBGPModule
+
+optimizer_vae_1:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 2e-5
+  weight_decay: 0.0
+
+optimizer_vae_2:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 2e-5
+  weight_decay: 0.0
+
+optimizer_score:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 1e-4
+  weight_decay: 0.0
+
+optimizer_cls:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 1e-4
+  weight_decay: 0.0
+
+#scheduler:
+#  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+#  _partial_: true
+#  mode: min
+#  factor: 0.1
+#  patience: 10
+
+vae1:
+  _target_: src.models.components.vae_cnn.CNN_VAE
+  latent_height: 2
+  latent_width: 2
+
+vae2:
+  _target_: src.models.components.vae_cnn.CNN_VAE
+  latent_height: 2
+  latent_width: 2
+
+score_prior:
+  _target_: src.models.components.score_based_model.Score_fn
+  _partial_: true
+  sigma_min: 0.01
+  sigma_max: 0.4
+  num_timesteps: 100
+
+unet:
+  _target_: src.models.components.unet.UNet
+  in_dim: 256
+  out_dim: 256
+  num_timesteps: 100
+  is_warm_init: false
+
+classifier:
+  _target_: src.models.components.classifier_net.CNN
+  input_height: 2
+  input_width: 2
+
+gp:
+  _target_: src.models.components.gp_precomputed_model.GPModule
+  _partial_: true
+  metric_name: "CLIP"
+  model_name: "ViT-L-14"
+  pretrained_dataset: "laion2b_s32b_b82k"
+
+beta: 0.005
+gp_lambda: 1e-4
+block_size: 128
+cls_lambda: 1e-3
+is_vanilla: true
+loops: 10
+
+# compile model for faster training with pytorch 2.0
+compile: false

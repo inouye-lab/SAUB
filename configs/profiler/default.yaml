@@ -1,0 +1,5 @@
+PyTorchProfiler:
+  _target_: lightning.pytorch.profilers.PyTorchProfiler
+  dirpath: "${paths.output_dir}/profiler"
+
+#  filename: "profiler"

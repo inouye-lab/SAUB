@@ -1,0 +1,6 @@
+_target_: src.data.mnist_usps_pair_enc_computed_datamodule.MNISTUSPSPairEncModule
+data_dir: ${paths.data_dir}
+batch_size: 4096 # Needs to be divisible by the number of devices (e.g., if in a distributed setup)
+num_workers: 16
+pin_memory: False
+postfix: "ViT-L-14_commonpool_xl_s13b_b90k_28"
